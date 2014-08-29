@@ -3,8 +3,8 @@ import os
 import time
 
 # Global Variables
-x_pad = 996
-y_pad = 345
+x_pad = 995
+y_pad = 300
 
 """
 All coordinates are based on a right docked Firefox window
@@ -14,7 +14,7 @@ All coordinates are based on a right docked Firefox window
 
 def screenGrab():
     # selects only game in screen shot
-    box = (x_pad+1, y_pad+1,x_pad+640, y_pad+469)
+    box = (x_pad+1, y_pad+1,x_pad+640, y_pad+480)
     # snapshot of screen
     im = ImageGrab.grab(box)
     # saves in current work directory with name based on time of pic
