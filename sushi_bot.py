@@ -4,15 +4,20 @@
 #
 # Sections
 # 1. Imports
-# 2. Coordinate related functions (you need to change this if you have a different configuration)
-# 3. Static location based functions (these are based on the top left corner of the flash game 
-#	     being (1, 1) so no resize should be necessary)
+# 2. Screen specific coordinates
+# 3. Grayscale sums
+# 4. Coordinate related functions
+# 5. Screen grabbing functions
+# 6. Mouse actions and movement
+# 7. Food quantity, mat folding, food checking, food making, and customer checking
+# 8. The body of the bot
+# 9. Main function
 #
 # See readme for setup and debugging logic
 
-# ============================================================================
+# ====================================================================================
 # == 1. Imports - win32api and win32con is windows only
-# ============================================================================
+# ====================================================================================
 
 import os
 import time
@@ -20,43 +25,27 @@ from numpy import *
 import win32api, win32con
 import  Image, ImageGrab, ImageOps
 
-# ============================================================================
-# == 2. Coordinate related functions
-# ============================================================================
+# ====================================================================================
+# == 2. Screen specific coordinates
+# ====================================================================================
 
 # The position of top left corner of the game window (first brown pixel inside the black border)
 x_pad = 995
 y_pad = 300
 
-# A box taken inside the white part of the chat bubble.
-chat_bubble_coordinates = (
-    # Seat 1
-    (1025,356,1078,380),
-    # Seat 2
-    (1126,356,1179,380),
-    # Seat 3
-    (1227,356,1280,380),
-    # Seat 4
-    (1328,356,1381,380),
-    # Seat 5
-    (1429,356,1482,380),
-    # Seat 6
-    (1530,356,1583,380)
-)
+# ====================================================================================
+# == 3. Grayscale sums
+# ====================================================================================
 
-# Gets the color sum of each of the chat bubble positions
-def get_all_hex_sums(chat_bubble_coordinates):
+seat_color_sums = [0,0,0,0,0,0]
+
+# Gets the color sum of each chat bubble position
+def get_all_grayscale_sums(chat_bubble_coordinates):
     for seat in range(0,6):
         image = ImageOps.grayscale(ImageGrab.grab(chat_bubble_coordinates[seat]))
         color_sum = array(image.getcolors())
         color_sum = color_sum.sum()
         seat_color_sums[seat] = color_sum
-
-seat_color_sums = [0,0,0,0,0,0]
-
-# ============================================================================
-# == 3. Coordinate related functions
-# ============================================================================
 
 # Sushi color sum dictionary
 # If you need to recalibrate these, run get_all_seat_color_sums and print a
@@ -72,6 +61,28 @@ class empty_seat_sum:
     seat_4 = 11922
     seat_5 = 11746
     seat_6 = 8454
+
+# ====================================================================================
+# == 4. Coordinate related functions
+# ====================================================================================
+
+# A box taken inside the white part of the chat bubble.
+# This could be turned into a formula
+chat_bubble_coordinates = (
+    # Seat 1
+    ((x_pad + 30), (y_pad + 56), (x_pad + 83), (y_pad + 80)),
+    # Seat 2
+    ((x_pad + 131), (y_pad + 56), (x_pad + 184), (y_pad + 80)),
+    # Seat 3
+    ((x_pad + 232), (y_pad + 56), (x_pad + 285), (y_pad + 80)),
+    # Seat 4
+    ((x_pad + 333), (y_pad + 56), (x_pad + 386), (y_pad + 80)),
+    # Seat 5
+    ((x_pad + 434), (y_pad + 56), (x_pad + 487), (y_pad + 80)),
+    # Seat 6
+    ((x_pad + 5351), (y_pad + 56), (x_pad + 588), (y_pad + 80))
+)
+
 
 # Menu item, phone (ordering), and menu navigation coordinates
 class Cord:
@@ -104,12 +115,12 @@ class Cord:
 def startGame():
     left_click((325, 375))
     left_click((320, 190))
-    left_click((320, 380))
+    left_click((320, (y_pad + 80)))
     left_click((585, 445))
     left_click((325, 360))
 
 # Clears the plates
-def clear_tables():
+def clear_plates():
     left_click((80, 200))
     left_click((180, 200))
     left_click((280, 200))
@@ -117,9 +128,9 @@ def clear_tables():
     left_click((480, 200))
     left_click((580, 200))
 
-# ============================================================================
-# == 3. Screen grabber
-# ============================================================================
+# ====================================================================================
+# == 5. Screen grabbing functions
+# ====================================================================================
 
 # Takes a grayscale screenshot of game and returns a color sum
 def grayscale_grab():
@@ -138,9 +149,9 @@ def screen_grab():
     im.save(os.getcwd() + '\\Snap__' + str(int(time.time())) + '.png', 'PNG')
     return im
 
-# ============================================================================
-# == 3. Mouse actions and movement
-# ============================================================================
+# ====================================================================================
+# == 6. Mouse actions and movement
+# ====================================================================================
 
 # Simulates a mouse click
 def left_click(coordinates_of_item):
@@ -158,9 +169,9 @@ def get_cords():
     y = y - y_pad
     print x, y
 
-# ============================================================================
-# == 3. Food quantity, mat folding, food checking, food making, and customer checking
-# ============================================================================
+# ====================================================================================
+# == 7. Food quantity, mat folding, food checking, food making, and customer checking
+# ====================================================================================
 
 # The default ingredient count
 food_quantity = {'shrimp':5,
@@ -174,6 +185,7 @@ food_quantity = {'shrimp':5,
 def check_ingredient_count():
     for food, food_count in food_quantity.items():
         if food == 'nori' or food == 'rice' or food == 'roe':
+            # checks and buys a resupply of low ingredients
             if food_count <= 3:
                 print '%s is low and needs to be replenished' % food
                 buy_food(food)
@@ -216,7 +228,7 @@ def make_food(food):
 
 # resupplying ingredients
 def buy_food(food):
-    clear_tables()
+    clear_plates()
     if food == 'rice':
         # Opens the phone and enters the rice menu
         left_click(Cord.phone)
@@ -225,12 +237,16 @@ def buy_food(food):
         # Checks the color sum to see if you have enough money
         if s.getpixel(Cord.buy_rice) != (127, 127, 127):
             print 'rice is available'
+            # buys and delivers rice
             left_click(Cord.buy_rice)
             left_click(Cord.normal_delivery)
+            # adds 10 for quantity tracking
             food_quantity['rice'] += 10
-            clear_tables()
+            # clear plates and pause for 4 seconds (resupply has a delay)
+            clear_plates()
             time.sleep(4)
         else:
+            # if none available loop until you can buy some
             print 'rice is NOT available'
             buy_food(food)
 
@@ -243,7 +259,7 @@ def buy_food(food):
             left_click(Cord.t_nori)
             left_click(Cord.normal_delivery)
             food_quantity['nori'] += 10
-            clear_tables()
+            clear_plates()
             time.sleep(4)
         else:
             print 'nori is NOT available'
@@ -258,31 +274,39 @@ def buy_food(food):
             left_click(Cord.t_roe)
             left_click(Cord.normal_delivery)
             food_quantity['roe'] += 10
-            clear_tables()
+            clear_plates()
             time.sleep(4)
         else:
             print 'roe is NOT available'
             buy_food(food)
 
+# ====================================================================================
+# == 8. The body of the bot
+# ====================================================================================
+
 # Checks each of the chat bubbles and returns the sushi type
 def check_customers():
-    clear_tables()
+    clear_plates()
+    # Loops through each seat
     for seat in range(0,6):
+        # Check and resupply low ingredients
         check_ingredient_count()
-        get_all_hex_sums(chat_bubble_coordinates)
+        # Get grayscale sum to check for sushi requests
+        get_all_grayscale_sums(chat_bubble_coordinates)
         seat_sum = seat_color_sums[seat]
         if seat_sum != empty_seat_sum.seat_1:
+            # Detect and make sushi
             if sushi_types.has_key(seat_sum):
                 print 'Table {0} is occupied and needs {1}.'.format(seat, sushi_types[seat_sum])
                 make_food(sushi_types[seat_sum])
             else:
                 # print 'Table {0} is unoccupied.'.format(seat)
-                clear_tables()
+                clear_plates()
    
 
-# ============================================================================
-# == 3. Main
-# ============================================================================
+# ====================================================================================
+# == 9. Main
+# ====================================================================================
 def main():
     try:
         while True:
