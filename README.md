@@ -1,7 +1,9 @@
 Sushi-Go-Round Bot
 ==================
 
-This is a really basic Python bot. It uses some very simple machine vision techniques and window coordinates to play complete rounds of this flash game.
+This is a really basic Python bot. It uses some very simple machine vision techniques and window coordinates to play complete rounds of the flash game Sushi-Go-Round.
+
+The initial bot was based off of <a href="http://code.tutsplus.com/tutorials/how-to-build-a-python-bot-that-can-play-web-games--active-11117">this tutorial.</a>
 
 <h2>Tools Used</h2>
 Pycharm, Sublime, Git, VirtualEnv <br>	
