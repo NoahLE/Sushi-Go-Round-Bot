@@ -75,19 +75,19 @@ chat_bubble_coordinates = (
 class Cord:
     phone = (560, 355)
     menu_toppings = (530, 270)
+    topping_exit = (595, 335)
     menu_rice = (512, 290)
+    rice_exit = (585, 335)
+    normal_delivery = (490, 290)
+
     buy_nori = (470, 275)
     buy_roe = (555, 275)
     buy_rice = (515, 275)
-    rice_exit = (585, 335)
-    topping_exit = (595, 335)
-
+    
     folding_mat = (200, 400)
     use_nori = (35, 390)
     use_roe = (90, 390)
     use_rice = (90, 330)
-
-    normal_delivery = (490, 290)
 
 # Skips the menu and starts a game
 def start_game():
@@ -138,7 +138,7 @@ def left_click(item_coordinates):
     time.sleep(.02)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
     # Gave the game a second to catch up
-    time.sleep(.5)
+    time.sleep(.2)
 
 # Finds the mouse and returns its coordinates
 def get_cords():
@@ -160,13 +160,9 @@ def check_ingredient_count():
                 # print '%s is low and needs to be replenished' % food
                 buy_food(food)
 
-def pixel_test(food, test_value, location):
-    print 'Trying to buy ', food
-    s = screen_grab()
-    print (s.getpixel(location)), test_value
-
 # resupplying ingredients
 def buy_food(food):
+    clear_plates()
     left_click(Cord.phone)
     if food == 'rice':
         left_click(Cord.menu_rice)
@@ -177,7 +173,6 @@ def buy_food(food):
 
     if food == 'rice':
         if (s.getpixel(Cord.buy_rice)) == (237, 166, 171):
-            pixel_test(food, ' - (237, 166, 171)', Cord.buy_rice)
             # print 'Rice is available.'
             # buys and delivers rice
             left_click(Cord.buy_rice)
@@ -186,53 +181,46 @@ def buy_food(food):
             # adds 10 for quantity tracking
             food_quantity['rice'] += 10
             # clear plates and pause for 4 seconds (resupply has a delay)
-            time.sleep(2)
+            time.sleep(3)
         elif (s.getpixel(Cord.buy_rice)) == (118, 83, 85):
-            pixel_test(food, ' - (118, 83, 85)', Cord.buy_rice)
             # if none available loop until you can buy some
             print 'Rice is NOT available.'
             left_click(Cord.rice_exit)
             time.sleep(5)
             buy_food('rice')
         else:
-            pixel_test(food, ' - 0', Cord.buy_rice)
             print 'Idk if I can buy anything'
 
     if food == 'nori':
         if (s.getpixel(Cord.buy_nori)) == (218, 246, 255):
-            pixel_test(food, ' - (218, 246, 255)', Cord.buy_nori)
             # print 'Nori is available.'
             left_click(Cord.buy_nori)
             time.sleep(.3)
             left_click(Cord.normal_delivery)
             food_quantity['nori'] += 10
-            time.sleep(2)
+            time.sleep(3)
         elif (s.getpixel(Cord.buy_nori)) == (109, 123, 127):
-            pixel_test(food, ' - (109, 123, 127)', Cord.buy_nori)
             print 'Nori is NOT available'
             left_click(Cord.topping_exit)
             time.sleep(5)
             buy_food('nori')
         else:
-            pixel_test(food, ' - 0', Cord.buy_nori)
             print 'Idk if I can buy anything'
+
     if food == 'roe':
         if (s.getpixel(Cord.buy_roe)) == (218, 246, 255):
-            pixel_test(food, ' - (218, 246, 255)', Cord.buy_roe)
             # print 'Roe is available.'
             left_click(Cord.buy_roe)
             time.sleep(.3)
             left_click(Cord.normal_delivery)
             food_quantity['roe'] += 10
-            time.sleep(2)
+            time.sleep(3)
         elif (s.getpixel(Cord.buy_roe)) == (109, 123, 127):
-            pixel_test(food, ' - (109, 123, 127)', Cord.buy_roe)
             print 'Roe is NOT available'
             left_click(Cord.topping_exit)
             time.sleep(5)
             buy_food('roe')
         else:
-            pixel_test(food, ' - 0', Cord.buy_roe)
             print 'Idk if I can buy anything'
 
 # Algorithms for making each sushi type
@@ -283,23 +271,23 @@ def bot_calibration():
     global food_quantity
     food_quantity = {'rice':10, 'nori':10, 'roe':10}
 
-    # Last time this seat was used
-    global seat_timestamps
-    seat_timestamps = [0, 0, 0, 0, 0, 0]
-
-    for seat in range(0,6):
-        seat_timestamps[seat] = int(time.time())
-
-    # Time for food to arrive and be eaten at a seat
-    global seat_cooldown
-    seat_cooldown = [11, 13, 17, 18, 21, 25]
-
     # Sushi color sum dictionary
     global sushi_sums
     sushi_sums = ['onigiri', 2235, 'caliroll', 2879, 'gunkan', 2242]
 
     global empty_seat_sum
     empty_seat_sum = get_all_grayscale_sums(chat_bubble_coordinates)
+
+    # # Last time this seat was used
+    # global seat_timestamps
+    # seat_timestamps = [0, 0, 0, 0, 0, 0]
+
+    # for seat in range(0,6):
+    #     seat_timestamps[seat] = int(time.time())
+
+    # # Time for food to arrive and be eaten at a seat
+    # global seat_cooldown
+    # seat_cooldown = [11, 13, 17, 18, 21, 25]
 
 # ====================================================================================
 # == 8. The body of the bot
@@ -308,8 +296,9 @@ def bot_calibration():
 # Checks each of the chat bubbles and returns the sushi type
 def check_customers():
     clear_plates()
-    time.sleep(8)
-    # Loops through each seat
+    time.sleep(5)
+    clear_plates()
+    time.sleep(5)
     for seat in range(0,6):
         # Time that has passed since last person sitting here was served
         # time_elapsed = (int(time.time()) - seat_timestamps[seat])
@@ -322,7 +311,7 @@ def check_customers():
                 # They're gone, clear the plates
                 check_ingredient_count()
                 make_food(seat_sum[seat])
-                seat_cooldown.insert(seat, int(time.time()))
+                # seat_cooldown.insert(seat, int(time.time()))
 
 # ====================================================================================
 # == 9. Main
