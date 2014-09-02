@@ -13,13 +13,12 @@ The initial bot was based off of <a href="http://code.tutsplus.com/tutorials/how
     <li>Less than 330 lines of code</li>
 </ul>
 
+<h4>Links</h4>
+<a href="https://vimeo.com/104863078">Check out the demo video!</a><br/>
+<a href="https://vimeo.com/104863211">Here's a full the bot playing a full round of Sushi-Go-Round</a>
+
 <h4>Tools</h4>
 <p>Python using the numPy, win32api, win32con, and Pillow libraries</p>
-
-<h4>Links</h4>
-<a href="https://vimeo.com/104863078">Check out the demo video</a><br/>
-<a href="https://github.com/DigitalMockingbird/Sushi-Go-Round-Bot">Check out the repo</a><br/>
-<a href="https://vimeo.com/104863211">Here's a full the bot playing a full round of Sushi-Go-Round</a>
 
 <h2>Setup</h2>
 Setup should be pretty simple, especially if you are using a 1920 x 1080 resolution.
