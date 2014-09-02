@@ -2,12 +2,24 @@ Sushi-Go-Round Bot
 ==================
 
 This is a really basic Python bot. It uses some very simple machine vision techniques and window coordinates to play complete rounds of the flash game Sushi-Go-Round.
-
 The initial bot was based off of <a href="http://code.tutsplus.com/tutorials/how-to-build-a-python-bot-that-can-play-web-games--active-11117">this tutorial.</a>
 
-<h2>Tools Used</h2>
-Pycharm, Sublime, Git, VirtualEnv <br>	
-Numpy, win32api
+<h4>Features</h4>
+<ul class="black">
+    <li>Works with any computer resolution</li>
+    <li>Automated Sushi detection and preparation</li>
+    <li>Low ingredient refills (it even compensates for your budget!)</li>
+    <li>Plate clearing and menu skipping features</li>
+    <li>Less than 330 lines of code</li>
+</ul>
+
+<h4>Tools</h4>
+<p>Python using the numPy, win32api, win32con, and Pillow libraries</p>
+
+<h4>Links</h4>
+<a href="https://vimeo.com/104863078">Check out the demo video</a><br/>
+<a href="https://github.com/DigitalMockingbird/Sushi-Go-Round-Bot">Check out the repo</a><br/>
+<a href="https://vimeo.com/104863211">Here's a full the bot playing a full round of Sushi-Go-Round</a>
 
 <h2>Setup</h2>
 Setup should be pretty simple, especially if you are using a 1920 x 1080 resolution.
@@ -26,3 +38,7 @@ After this is done, you might need to recalibrate the sushi grayscale sum (see c
 
 <h2>For Windows users</h2>
 I had a problem with screen scaling (the screen shot will be too small) which can be turned off via Control Panel > Display (move it to the far left).
+
+<h4>Summary</h4>
+<p class="black">This is a Python bot which uses basic machine vision to play the flash game Sushi-Go-Round.</p>
+
