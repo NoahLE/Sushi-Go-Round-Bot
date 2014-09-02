@@ -37,7 +37,3 @@ After this is done, you might need to recalibrate the sushi grayscale sum (see c
 
 <h2>For Windows users</h2>
 I had a problem with screen scaling (the screen shot will be too small) which can be turned off via Control Panel > Display (move it to the far left).
-
-<h4>Summary</h4>
-<p class="black">This is a Python bot which uses basic machine vision to play the flash game Sushi-Go-Round.</p>
-
