@@ -14,21 +14,32 @@ The initial bot was based off of <a href="http://code.tutsplus.com/tutorials/how
 </ul>
 
 <h4>Links</h4>
-<a href="https://vimeo.com/104863078">Check out the demo video!</a><br/>
+<a href="https://vimeo.com/104863078">Check out the demo video!</a>
+<br/>
 <a href="https://vimeo.com/104863211">Here's a full the bot playing a full round of Sushi-Go-Round</a>
 
 <h4>Tools</h4>
 <p>Python using the numPy, win32api, win32con, and Pillow libraries</p>
 
+<h4>Possible to-do's:</h4>
+<ul class="black">
+<li>Refactor duplicate sections of code</li>
+<li>Add test coverage</li>
+<li>Research replacing browser finding with a framework like Selenium</li>
+<li>Make program modular for other flash games</li>
+</ul>
+
 <h2>Setup</h2>
 Setup should be pretty simple, especially if you are using a 1920 x 1080 resolution.
 
-<b>For 1920 x 1080 people:</b> <br>
+<b>For 1920 x 1080 people:</b> 
+<br>
 Open <a href="http://www.miniclip.com/games/sushi-go-round/en/">the game</a> and dock your browser on the right side of your screen (hold down the Windows / Super key and press the right arrow key until it's locked in).
 <br><br>
 You can check to make sure your mouse will line up with the ingame coordinates by running screen_grab_debugging.py or any of the screen grabbing functions.
 <br><br>
-<b>For everyone else:</b> <br>
+<b>For everyone else:</b> 
+<br>
 Open <a href="http://www.miniclip.com/games/sushi-go-round/en/">the game</a> and dock your browser on the right side of your screen (hold down the Windows key and press the right arrow key until it's locked in).
 <br><br>
 The first thing you should do is run screen_grab_debugging.py to grab a shot of your screen. Inside of sushi_bot.py on lines 28 and 29 change x_pad and y_pad to the top left corner of the game (in the brown pixel between two black pixels). This can be done in Photoshop, Paint.net, or any other image editor of your choice. See section 2. Screen specific coordinates in sushi_bot.py.

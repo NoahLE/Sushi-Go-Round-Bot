@@ -24,7 +24,7 @@ import time
 # from datetime import datetime, time
 from numpy import *
 import win32api, win32con
-import  Image, ImageGrab, ImageOps
+import Image, ImageGrab, ImageOps
 
 # ====================================================================================
 # == 2. Screen specific coordinates
@@ -33,6 +33,8 @@ import  Image, ImageGrab, ImageOps
 # The position of top left corner of the game window (first brown pixel inside the black border)
 x_pad = 974
 y_pad = 86
+
+
 # x_pad = 995
 # y_pad = 300
 
@@ -49,6 +51,7 @@ def get_all_grayscale_sums(chat_bubble_coordinates):
         color_sum = color_sum.sum()
         seat_color_sums[seat] = color_sum
     return seat_color_sums
+
 
 # ====================================================================================
 # == 4. Coordinate related functions
@@ -71,6 +74,7 @@ chat_bubble_coordinates = (
     ((x_pad + 535), (y_pad + 56), (x_pad + 588), (y_pad + 80))
 )
 
+
 # Menu item, phone (ordering), and menu navigation coordinates
 class Cord:
     phone = (560, 355)
@@ -83,11 +87,12 @@ class Cord:
     buy_nori = (470, 275)
     buy_roe = (555, 275)
     buy_rice = (515, 275)
-    
+
     folding_mat = (200, 400)
     use_nori = (35, 390)
     use_roe = (90, 390)
     use_rice = (90, 330)
+
 
 # Skips the menu and starts a game
 def start_game():
@@ -96,6 +101,7 @@ def start_game():
     left_click((320, 390))
     left_click((585, 445))
     left_click((325, 360))
+
 
 # Clears the plates
 def clear_plates():
@@ -106,13 +112,14 @@ def clear_plates():
     left_click((480, 200))
     left_click((580, 200))
 
+
 # ====================================================================================
 # == 5. Screen grabbing functions
 # ====================================================================================
 
 # Takes a grayscale screenshot of game and returns a color sum
 def grayscale_grab():
-    box = (x_pad, y_pad, x_pad+640, y_pad+480)
+    box = (x_pad, y_pad, x_pad + 640, y_pad + 480)
     im = ImageOps.grayscale(ImageGrab.grab(box))
     a = array(im.getcolors())
     a = a.sum()
@@ -120,12 +127,14 @@ def grayscale_grab():
     # im.save(os.getcwd() + '\\Snap__' + str(int(time.time())) + '.png', 'PNG')
     return a
 
+
 # Takes a screenshot of the entire game - for debugging
 def screen_grab():
-    box = (x_pad, y_pad, x_pad+640, y_pad+480)
+    box = (x_pad, y_pad, x_pad + 640, y_pad + 480)
     im = ImageGrab.grab(box)
     # im.save(os.getcwd() + '\\Snap__' + str(int(time.time())) + '.png', 'PNG')
     return im
+
 
 # ====================================================================================
 # == 6. Mouse actions and movement
@@ -140,12 +149,14 @@ def left_click(item_coordinates):
     # Gave the game a second to catch up
     time.sleep(.2)
 
+
 # Finds the mouse and returns its coordinates
 def get_cords():
     x, y = win32api.GetCursorPos()
     x = x - x_pad
     y = y - y_pad
     print x, y
+
 
 # ====================================================================================
 # == 7. Food quantity, mat folding, food checking, food making, and customer checking
@@ -159,6 +170,7 @@ def check_ingredient_count():
             if food_count <= 3:
                 # print '%s is low and needs to be replenished' % food
                 buy_food(food)
+
 
 # resupplying ingredients
 def buy_food(food):
@@ -223,6 +235,7 @@ def buy_food(food):
         else:
             print 'Idk if I can buy anything'
 
+
 # Algorithms for making each sushi type
 def make_food(food):
     if food == 2879:
@@ -262,6 +275,7 @@ def make_food(food):
         left_click(Cord.folding_mat)
         time.sleep(.5)
 
+
 # ====================================================================================
 # == 8. The body of the bot
 # ====================================================================================
@@ -269,7 +283,7 @@ def make_food(food):
 def bot_calibration():
     # The default ingredient count
     global food_quantity
-    food_quantity = {'rice':10, 'nori':10, 'roe':10}
+    food_quantity = {'rice': 10, 'nori': 10, 'roe': 10}
 
     # Sushi color sum dictionary
     global sushi_sums
@@ -289,6 +303,7 @@ def bot_calibration():
     # global seat_cooldown
     # seat_cooldown = [11, 13, 17, 18, 21, 25]
 
+
 # ====================================================================================
 # == 8. The body of the bot
 # ====================================================================================
@@ -299,19 +314,20 @@ def check_customers():
     time.sleep(5)
     clear_plates()
     time.sleep(5)
-    for seat in range(0,6):
+    for seat in range(0, 6):
         # Time that has passed since last person sitting here was served
         # time_elapsed = (int(time.time()) - seat_timestamps[seat])
         # if time_elapsed > seat_cooldown[seat]:
-            # print time_elapsed - seat_cooldown[seat]
-            # Scan bubbles
-            seat_sum = get_all_grayscale_sums(chat_bubble_coordinates)
-            # If seat is not empty
-            if seat_sum[seat] != empty_seat_sum[seat]:
-                # They're gone, clear the plates
-                check_ingredient_count()
-                make_food(seat_sum[seat])
-                # seat_cooldown.insert(seat, int(time.time()))
+        # print time_elapsed - seat_cooldown[seat]
+        # Scan bubbles
+        seat_sum = get_all_grayscale_sums(chat_bubble_coordinates)
+        # If seat is not empty
+        if seat_sum[seat] != empty_seat_sum[seat]:
+            # They're gone, clear the plates
+            check_ingredient_count()
+            make_food(seat_sum[seat])
+            # seat_cooldown.insert(seat, int(time.time()))
+
 
 # ====================================================================================
 # == 9. Main
@@ -323,6 +339,7 @@ def main():
     bot_calibration()
     while True:
         check_customers()
+
 
 if __name__ == '__main__':
     main()
